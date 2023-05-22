@@ -1,23 +1,25 @@
 import { createShader } from "./createShader";
-import { fragmentShaderSource } from "./fragmentShaderSource";
-import { vertexShaderSource } from "./vertexShaderSource";
 
 
-export const initWebGl = (canvas: HTMLCanvasElement) => {
+export const initWebGl = (
+    canvas: HTMLCanvasElement,
+    vertexShaderSource: string,
+    fragmentShaderSource: string
+) => {
     const gl = canvas.getContext("webgl2");
     if (!gl) {
-        return;
+        return {};
     }
 
     const program = gl.createProgram();
     if (!program) {
-        return;
+        return {};
     }
 
     const vertexShader = createShader(gl, gl.VERTEX_SHADER, vertexShaderSource);
     const fragmentShader = createShader(gl, gl.FRAGMENT_SHADER, fragmentShaderSource);
     if (!fragmentShader || !vertexShader) {
-        return;
+        return {};
     }
 
     gl.attachShader(program, vertexShader);
@@ -32,22 +34,24 @@ export const initWebGl = (canvas: HTMLCanvasElement) => {
 
     gl.useProgram(program);
 
-    const bufferData = new Float32Array([
-        0, 0, 100
-    ]);
+    return { gl, program };
 
-    const aPositionLoc = gl.getAttribLocation(program, "aPosition");
-    const aPointSizeLoc = gl.getAttribLocation(program, "aPointSize");
+    // const bufferData = new Float32Array([
+    //     0, 0, 100
+    // ]);
 
-    gl.enableVertexAttribArray(aPositionLoc);
-    gl.enableVertexAttribArray(aPointSizeLoc);
+    // const aPositionLoc = gl.getAttribLocation(program, "aPosition");
+    // const aPointSizeLoc = gl.getAttribLocation(program, "aPointSize");
 
-    const buffer = gl.createBuffer();
-    gl.bindBuffer(gl.ARRAY_BUFFER, buffer);
-    gl.bufferData(gl.ARRAY_BUFFER, bufferData, gl.STATIC_DRAW);
+    // gl.enableVertexAttribArray(aPositionLoc);
+    // gl.enableVertexAttribArray(aPointSizeLoc);
 
-    gl.vertexAttribPointer(aPositionLoc, 2, gl.FLOAT, false, 3 * 4, 0);
-    gl.vertexAttribPointer(aPointSizeLoc, 1, gl.FLOAT, false, 3 * 4, 2 * 4);
+    // const buffer = gl.createBuffer();
+    // gl.bindBuffer(gl.ARRAY_BUFFER, buffer);
+    // gl.bufferData(gl.ARRAY_BUFFER, bufferData, gl.STATIC_DRAW);
+
+    // gl.vertexAttribPointer(aPositionLoc, 2, gl.FLOAT, false, 3 * 4, 0);
+    // gl.vertexAttribPointer(aPointSizeLoc, 1, gl.FLOAT, false, 3 * 4, 2 * 4);
 
     // const uIndex = gl.getUniformLocation(program, "uIndex");
     // gl.uniform1i(uIndex, 0);
@@ -59,5 +63,5 @@ export const initWebGl = (canvas: HTMLCanvasElement) => {
     //     0, 0, 1, 1
     // ]);
 
-    gl.drawArrays(gl.POINTS, 0, 1);
+    // gl.drawArrays(gl.POINTS, 0, 1);
 };
