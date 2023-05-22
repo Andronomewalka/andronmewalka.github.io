@@ -32,5 +32,32 @@ export const initWebGl = (canvas: HTMLCanvasElement) => {
 
     gl.useProgram(program);
 
+    const bufferData = new Float32Array([
+        0, 0, 100
+    ]);
+
+    const aPositionLoc = gl.getAttribLocation(program, "aPosition");
+    const aPointSizeLoc = gl.getAttribLocation(program, "aPointSize");
+
+    gl.enableVertexAttribArray(aPositionLoc);
+    gl.enableVertexAttribArray(aPointSizeLoc);
+
+    const buffer = gl.createBuffer();
+    gl.bindBuffer(gl.ARRAY_BUFFER, buffer);
+    gl.bufferData(gl.ARRAY_BUFFER, bufferData, gl.STATIC_DRAW);
+
+    gl.vertexAttribPointer(aPositionLoc, 2, gl.FLOAT, false, 3 * 4, 0);
+    gl.vertexAttribPointer(aPointSizeLoc, 1, gl.FLOAT, false, 3 * 4, 2 * 4);
+
+    // const uIndex = gl.getUniformLocation(program, "uIndex");
+    // gl.uniform1i(uIndex, 0);
+
+    // const uColorsLoc = gl.getUniformLocation(program, "uColors");
+    // gl.uniform4fv(uColorsLoc, [
+    //     1, 0, 0, 1,
+    //     0, 1, 0, 1,
+    //     0, 0, 1, 1
+    // ]);
+
     gl.drawArrays(gl.POINTS, 0, 1);
 };
