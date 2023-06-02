@@ -12,13 +12,10 @@ export const setBuffer = (gl: WebGL2RenderingContext, program: WebGLProgram, wid
 
     const buffer = gl.createBuffer();
     const bufferData = new Float32Array([
-        -1, 1, width, height, 1, 0,
-        -1, -1, width, height, 1, 1,
-        1, -1, width, height, 0, 1,
-
-        -1, 1, width, height, 1, 0,
         1, 1, width, height, 0, 0,
-        1, -1, width, height, 0, 1
+        -1, 1, width, height, 1, 0,
+        1, -1, width, height, 0, 1,
+        -1, -1, width, height, 1, 1
     ]);
     gl.bindBuffer(gl.ARRAY_BUFFER, buffer);
     gl.bufferData(gl.ARRAY_BUFFER, bufferData, WebGLRenderingContext.DYNAMIC_DRAW);
