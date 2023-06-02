@@ -28,9 +28,6 @@ export const VideoCanvas: FC = () => {
             return;
         }
 
-        // canvasRef.current.width = canvasRef.current.parentElement.clientWidth;
-        // canvasRef.current.height = canvasRef.current.parentElement.clientHeight;
-
         const onVideoReady = () => {
             console.log("onVideoReady");
             startStreamToCanvas(canvas, video);

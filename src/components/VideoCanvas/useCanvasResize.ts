@@ -10,8 +10,12 @@ export const useCanvasResize = (canvasRef: RefObject<HTMLCanvasElement>) => {
             return;
         }
 
-        const width = canvasContainer.clientWidth;
-        const height = Math.round(canvasContainer.clientWidth / ratio);
+        const maxHeight = window.outerHeight - 180;
+        const maxWidth = Math.round(maxHeight * ratio);
+        canvas.style.maxWidth = `${maxWidth}px`;
+
+        const width = Math.min(canvasContainer.clientWidth, maxWidth);
+        const height = Math.round(width / ratio);
 
         canvas.setAttribute('width', `${width}`);
         canvas.setAttribute('height', `${height}`);
