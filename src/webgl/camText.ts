@@ -104,7 +104,7 @@ export const streamLoop = (
     setActiveTexture(gl, 0, camTexture);
     gl.texSubImage2D(gl.TEXTURE_2D, 0, 0, 0, gl.RGBA, gl.UNSIGNED_BYTE, video);
 
-    gl.drawElements(gl.TRIANGLES, 6, gl.UNSIGNED_SHORT, 0);
+    gl.drawArrays(gl.TRIANGLES, 0, 6);
     gl.flush();
 
     requestAnimationFrame(() => streamLoop(gl, program, canvas, video));
