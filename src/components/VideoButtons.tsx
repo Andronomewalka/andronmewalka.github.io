@@ -1,14 +1,24 @@
 import { FC } from "react";
-import { useMediaStream } from "./MediaStreamContext/useMediaStream";
+import { useAtom } from "jotai";
+import { mediaStreamAtom } from "../state/mediaStreamAtom";
 
 export const VideoButtons: FC = () => {
-	const { mediaStream, startStream, stopStream } = useMediaStream();
+	const [mediaStream, setMediaStream] = useAtom(mediaStreamAtom);
 
 	const onClick = () => {
 		if (mediaStream) {
-			stopStream();
+			mediaStream?.getTracks().forEach((track) => track.stop());
+			setMediaStream(null);
 		} else {
-			startStream();
+			navigator.mediaDevices
+				.getUserMedia({ video: true })
+				.then((res) => {
+					console.log("MediaStreamProvider set stream", res);
+					setMediaStream(res);
+				})
+				.catch((err) => {
+					console.log("err", err);
+				});
 		}
 	};
 

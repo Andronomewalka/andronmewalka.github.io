@@ -1,11 +1,12 @@
 import { FC, useCallback, useEffect, useRef } from "react";
 import { startStreamToCanvas, stopStreamToCanvas, updateBuffer } from "../../webgl/camText";
-import { useMediaStream } from "../MediaStreamContext/useMediaStream";
 import { useCanvasResize } from "./useCanvasResize";
 import { useOnUpdateControls } from "./useOnUpdateControls";
+import { useAtom } from "jotai";
+import { mediaStreamAtom } from "../../state/mediaStreamAtom";
 
 export const VideoCanvas: FC = () => {
-	const { mediaStream } = useMediaStream();
+	const [mediaStream] = useAtom(mediaStreamAtom);
 
 	const canvasRef = useRef<HTMLCanvasElement>(null);
 	const videoRef = useRef<HTMLVideoElement>();
@@ -43,7 +44,6 @@ export const VideoCanvas: FC = () => {
 		}
 
 		const onVideoReady = () => {
-			console.log("onVideoReady");
 			startStreamToCanvas(canvas, video);
 			requestAnimationFrame(() => updateBuffer(canvas));
 		};
