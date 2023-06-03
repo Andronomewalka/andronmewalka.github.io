@@ -3,19 +3,13 @@ import * as RadixSlider from "@radix-ui/react-slider";
 
 type SliderProps = {
 	title?: string;
-	defaultValue?: number;
+	value?: number;
 	max?: number;
 	step?: number;
 	onChange?: (value: number[]) => void;
 };
 
-export const Slider: FC<SliderProps> = ({
-	title,
-	defaultValue = 0,
-	max = 1,
-	step = 0.01,
-	onChange,
-}) => {
+export const Slider: FC<SliderProps> = ({ title, value = 0, max = 1, step = 0.01, onChange }) => {
 	const id = useId();
 	return (
 		<form className="flex items-center gap-4">
@@ -25,7 +19,7 @@ export const Slider: FC<SliderProps> = ({
 			<RadixSlider.Root
 				id={id}
 				className="relative flex h-5 w-[200px] touch-none select-none items-center"
-				defaultValue={[defaultValue]}
+				value={[value]}
 				max={max}
 				step={step}
 				onValueChange={onChange}

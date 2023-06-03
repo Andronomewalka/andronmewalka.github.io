@@ -13,7 +13,6 @@ export const VideoButtons: FC = () => {
 			navigator.mediaDevices
 				.getUserMedia({ video: true })
 				.then((res) => {
-					console.log("MediaStreamProvider set stream", res);
 					setMediaStream(res);
 				})
 				.catch((err) => {

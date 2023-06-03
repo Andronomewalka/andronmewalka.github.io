@@ -1,4 +1,4 @@
-import { ControlsType } from "../state/controlsAtom";
+import { ControlsType, initControls } from "../state/controlsAtom";
 import { setActiveTexture } from "../utils/setActiveTexture";
 import { setFloatUniform } from "../utils/setUniform";
 import { getCamTexture } from "./getCamTexture";
@@ -35,7 +35,11 @@ const frag = glsl`#version 300 es
 
     uniform sampler2D camTexture;
     uniform float saturation;
+    uniform float brightness;
+    uniform float contrast;
+    uniform float hue;
     uniform float warmth;
+    uniform float cold;
 
     in vec2 fSize;
     in vec2 fUv;
@@ -57,19 +61,30 @@ const frag = glsl`#version 300 es
       return 1.0 - coord / fSize;
     } 
 
+    vec3 hueShift(vec3 color, float hue) {
+        const vec3 k = vec3(0.57735, 0.57735, 0.57735);
+        float cosAngle = cos(hue);
+        return vec3(color * cosAngle + cross(k, color) * sin(hue) + k * dot(k, color) * (1.0 - cosAngle));
+    }
+
     vec3 saturationVector = vec3(0.299, 0.587, 0.114);
+    vec3 greyVec = vec3(0.5, 0.5, 0.5);
 
     void main() {
       vec2 p = normalizeScreenCoords();
       vec2 coord = 1.0 - gl_FragCoord.xy / fSize;
 
       vec4 tex = texture(camTexture, fUv + vec2(0.0, 0.0));
+
       vec3 desaturated = vec3(dot(saturationVector, tex.rgb));
       vec3 mixed = mix(desaturated, tex.rgb, saturation);
       vec4 color = vec4(mixed, tex.a);
 
-      color.r += warmth;
-      color.b -= warmth;
+      color.r += warmth - cold;
+      color.b -= warmth + cold;
+
+      color.rgb = mix(color.rgb * brightness, mix(greyVec, color.rgb, contrast), 0.5);
+      color.rbg = hueShift(color.rgb, hue);
 
       fragColor = color;
     }
@@ -106,7 +121,8 @@ export const streamLoop = (
 export async function startStreamToCanvas(canvas: HTMLCanvasElement, video: HTMLVideoElement) {
     stop = false;
     const { gl, program } = getWebGL(canvas, vert, frag);
-    setBuffer(gl, program, canvas.width, canvas.height);
+    updateBuffer(canvas);
+    updateUniforms(canvas);
     streamLoop(gl, program, canvas, video);
 }
 
@@ -119,8 +135,13 @@ export const updateBuffer = (canvas: HTMLCanvasElement) => {
     setBuffer(gl, program, canvas.width, canvas.height);
 };
 
-export const updateUniforms = (canvas: HTMLCanvasElement, controls: ControlsType) => {
+export const updateUniforms = (canvas: HTMLCanvasElement, controls?: ControlsType) => {
     const { gl, program } = getWebGL(canvas, vert, frag);
-    setFloatUniform(gl, program, "saturation", controls.saturation);
-    setFloatUniform(gl, program, "warmth", controls.warmth);
+    const source = controls ?? initControls;
+    setFloatUniform(gl, program, "saturation", source.saturation);
+    setFloatUniform(gl, program, "brightness", source.brightness);
+    setFloatUniform(gl, program, "contrast", source.contrast);
+    setFloatUniform(gl, program, "hue", source.hue);
+    setFloatUniform(gl, program, "warmth", source.warmth);
+    setFloatUniform(gl, program, "cold", source.cold);
 };
