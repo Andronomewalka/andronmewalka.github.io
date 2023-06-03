@@ -1,3 +1,6 @@
+import { blackA, violet } from '@radix-ui/colors';
+// const { blackA, violet } require('@radix-ui/colors');
+
 /** @type {import('tailwindcss').Config} */
 export default {
   content: [
@@ -5,7 +8,12 @@ export default {
     "./src/**/*.{js,ts,jsx,tsx}",
   ],
   theme: {
-    extend: {},
+    extend: {
+      colors: {
+        ...blackA,
+        ...violet,
+      },
+    },
   },
   plugins: [],
 }

@@ -13,6 +13,10 @@ export const getWebGL = (
         initWebGl(canvas, vertexShaderSource, fragmentShaderSource);
     }
 
+    if (!gl || !program) {
+        throw new Error("cant init webgl");
+    }
+
     return { gl, program };
 };
 

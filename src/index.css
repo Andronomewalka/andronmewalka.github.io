@@ -4,10 +4,10 @@
 
 html,
 body {
-  @apply w-full h-full;
+	@apply h-full w-full;
 }
 
 #root {
-  @apply w-full h-full grid bg-slate-950;
-  grid-template-rows: 1fr auto;
+	@apply relative grid h-full w-full overflow-hidden bg-slate-950;
+	grid-template-rows: 1fr auto;
 }

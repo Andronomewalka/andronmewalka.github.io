@@ -5,9 +5,13 @@ import { createTexture } from "./createTexture";
 let camTexture: WebGLTexture | null = null;
 
 export const getCamTexture = (gl: WebGL2RenderingContext, program: WebGLProgram, video: HTMLVideoElement) => {
-    // if (!camTexture) {
-    initCamTexture(gl, program, video);
-    // }
+    if (!camTexture) {
+        initCamTexture(gl, program, video);
+    }
+
+    if (!camTexture) {
+        throw new Error("can't init cam texture");
+    }
 
     return camTexture;
 };

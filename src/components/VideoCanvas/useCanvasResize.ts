@@ -2,8 +2,8 @@ import { RefObject, useCallback, useLayoutEffect } from "react";
 
 const ratio = window.screen.availWidth / window.screen.availHeight;
 
-export const useCanvasResize = (canvasRef: RefObject<HTMLCanvasElement>) => {
-    const onResize = useCallback(() => {
+export const useCanvasResize = (canvasRef: RefObject<HTMLCanvasElement>, onResize: () => void) => {
+    const onResizeInternal = useCallback(() => {
         const canvas = canvasRef.current;
         const canvasContainer = canvas?.parentElement;
         if (!canvas || !canvasContainer) {
@@ -19,11 +19,12 @@ export const useCanvasResize = (canvasRef: RefObject<HTMLCanvasElement>) => {
 
         canvas.setAttribute('width', `${width}`);
         canvas.setAttribute('height', `${height}`);
-    }, [canvasRef]);
+        onResize?.();
+    }, [canvasRef, onResize]);
 
     useLayoutEffect(() => {
-        onResize();
-        window.addEventListener("resize", onResize);
-        return () => window.removeEventListener("resize", onResize);
-    }, [onResize]);
+        onResizeInternal();
+        window.addEventListener("resize", onResizeInternal);
+        return () => window.removeEventListener("resize", onResizeInternal);
+    }, [onResizeInternal]);
 };

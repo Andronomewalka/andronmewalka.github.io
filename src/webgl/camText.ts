@@ -1,3 +1,4 @@
+import { ControlsType } from "../state/controlsAtom";
 import { setActiveTexture } from "../utils/setActiveTexture";
 import { setFloatUniform } from "../utils/setUniform";
 import { getCamTexture } from "./getCamTexture";
@@ -90,16 +91,8 @@ export const streamLoop = (
     }
 
     const camTexture = getCamTexture(gl, program, video);
-    if (!camTexture) {
-        return;
-    }
-
-    setBuffer(gl, program, canvas.width, canvas.height);
-
     gl.viewport(0, 0, gl.drawingBufferWidth, gl.drawingBufferHeight);
     gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
-
-
 
     setActiveTexture(gl, 0, camTexture);
     gl.texSubImage2D(gl.TEXTURE_2D, 0, 0, 0, gl.RGBA, gl.UNSIGNED_BYTE, video);
@@ -112,17 +105,22 @@ export const streamLoop = (
 
 export async function startStreamToCanvas(canvas: HTMLCanvasElement, video: HTMLVideoElement) {
     stop = false;
-
     const { gl, program } = getWebGL(canvas, vert, frag);
-    if (!gl || !program) {
-        return;
-    }
-
-    setFloatUniform(gl, program, "saturation", 0);
-    setFloatUniform(gl, program, "warmth", 0.2);
+    setBuffer(gl, program, canvas.width, canvas.height);
     streamLoop(gl, program, canvas, video);
 }
 
 export const stopStreamToCanvas = () => {
     stop = true;
+};
+
+export const updateBuffer = (canvas: HTMLCanvasElement) => {
+    const { gl, program } = getWebGL(canvas, vert, frag);
+    setBuffer(gl, program, canvas.width, canvas.height);
+};
+
+export const updateUniforms = (canvas: HTMLCanvasElement, controls: ControlsType) => {
+    const { gl, program } = getWebGL(canvas, vert, frag);
+    setFloatUniform(gl, program, "saturation", controls.saturation);
+    setFloatUniform(gl, program, "warmth", controls.warmth);
 };
