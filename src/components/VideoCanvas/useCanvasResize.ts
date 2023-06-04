@@ -17,8 +17,9 @@ export const useCanvasResize = (canvasRef: RefObject<HTMLCanvasElement>, onResiz
         const width = Math.min(canvasContainer.clientWidth, maxWidth);
         const height = Math.round(width / ratio);
 
-        canvas.setAttribute('width', `${width}`);
-        canvas.setAttribute('height', `${height}`);
+        canvas.width = Math.floor(width * window.devicePixelRatio);
+        canvas.height = Math.floor(height * window.devicePixelRatio);
+
         onResize?.();
     }, [canvasRef, onResize]);
 
@@ -27,4 +28,6 @@ export const useCanvasResize = (canvasRef: RefObject<HTMLCanvasElement>, onResiz
         window.addEventListener("resize", onResizeInternal);
         return () => window.removeEventListener("resize", onResizeInternal);
     }, [onResizeInternal]);
+
+    return onResizeInternal;
 };

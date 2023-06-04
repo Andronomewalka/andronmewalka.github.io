@@ -38,11 +38,13 @@ export const VideoControls: FC = () => {
 				<Slider
 					title="Warmth"
 					value={controls.warmth}
+					max={0.4}
 					onChange={(value) => setControls({ ...controls, warmth: value[0] })}
 				/>
 				<Slider
 					title="Cold"
 					value={controls.cold}
+					max={0.4}
 					onChange={(value) => setControls({ ...controls, cold: value[0] })}
 				/>
 				<button

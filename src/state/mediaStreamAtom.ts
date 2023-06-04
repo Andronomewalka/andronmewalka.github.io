@@ -1,3 +1,13 @@
 import { atom } from 'jotai';
 
-export const mediaStreamAtom = atom<MediaStream | null>(null);
+export type MediaStreamType = {
+    stream?: MediaStream;
+    status: string;
+};
+
+export const initMediaStream: MediaStreamType = {
+    stream: undefined,
+    status: "Not connected"
+};
+
+export const mediaStreamAtom = atom<MediaStreamType>(initMediaStream);

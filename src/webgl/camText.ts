@@ -80,11 +80,11 @@ const frag = glsl`#version 300 es
       vec3 mixed = mix(desaturated, tex.rgb, saturation);
       vec4 color = vec4(mixed, tex.a);
 
-      color.r += warmth - cold;
-      color.b -= warmth + cold;
-
       color.rgb = mix(color.rgb * brightness, mix(greyVec, color.rgb, contrast), 0.5);
       color.rbg = hueShift(color.rgb, hue);
+
+      color.r += warmth - cold;
+      color.b -= warmth + cold;
 
       fragColor = color;
     }
@@ -93,20 +93,19 @@ const frag = glsl`#version 300 es
 
 let stop: boolean = false;
 
-export const streamLoop = (
+const streamLoop = (
     gl: WebGL2RenderingContext,
     program: WebGLProgram,
     canvas: HTMLCanvasElement,
     video: HTMLVideoElement
 ) => {
     if (stop) {
-        gl.viewport(0, 0, gl.drawingBufferWidth, gl.drawingBufferHeight);
         gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
+        gl.flush();
         return;
     }
 
     const camTexture = getCamTexture(gl, program, video);
-    gl.viewport(0, 0, gl.drawingBufferWidth, gl.drawingBufferHeight);
     gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
 
     setActiveTexture(gl, 0, camTexture);
@@ -118,13 +117,13 @@ export const streamLoop = (
     requestAnimationFrame(() => streamLoop(gl, program, canvas, video));
 };
 
-export async function startStreamToCanvas(canvas: HTMLCanvasElement, video: HTMLVideoElement) {
+export const startStreamToCanvas = (canvas: HTMLCanvasElement, video: HTMLVideoElement, controls?: ControlsType) => {
     stop = false;
     const { gl, program } = getWebGL(canvas, vert, frag);
     updateBuffer(canvas);
-    updateUniforms(canvas);
+    updateUniforms(canvas, controls);
     streamLoop(gl, program, canvas, video);
-}
+};
 
 export const stopStreamToCanvas = () => {
     stop = true;
@@ -133,6 +132,7 @@ export const stopStreamToCanvas = () => {
 export const updateBuffer = (canvas: HTMLCanvasElement) => {
     const { gl, program } = getWebGL(canvas, vert, frag);
     setBuffer(gl, program, canvas.width, canvas.height);
+    gl.viewport(0, 0, gl.drawingBufferWidth, gl.drawingBufferHeight);
 };
 
 export const updateUniforms = (canvas: HTMLCanvasElement, controls?: ControlsType) => {

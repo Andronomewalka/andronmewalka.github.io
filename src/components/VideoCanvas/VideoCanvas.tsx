@@ -4,9 +4,13 @@ import { useCanvasResize } from "./useCanvasResize";
 import { useOnUpdateControls } from "./useOnUpdateControls";
 import { useAtom } from "jotai";
 import { mediaStreamAtom } from "../../state/mediaStreamAtom";
+import { controlsAtom } from "../../state/controlsAtom";
+import { useRefState } from "../../hooks/useRefState";
 
 export const VideoCanvas: FC = () => {
 	const [mediaStream] = useAtom(mediaStreamAtom);
+	const [controls] = useAtom(controlsAtom);
+	const refControls = useRefState(controls);
 
 	const canvasRef = useRef<HTMLCanvasElement>(null);
 	const videoRef = useRef<HTMLVideoElement>();
@@ -28,32 +32,32 @@ export const VideoCanvas: FC = () => {
 		}
 	}, []);
 
-	useCanvasResize(canvasRef, onCanvasResize);
+	const resizeCanvas = useCanvasResize(canvasRef, onCanvasResize);
 	useOnUpdateControls(canvasRef);
 
 	useEffect(() => {
 		const video = videoRef.current;
 		const canvas = canvasRef.current;
-		if (!canvas || !video || !mediaStream) {
+		if (!canvas || !video || !mediaStream.stream) {
 			return;
 		}
 
-		video.srcObject = mediaStream;
+		video.srcObject = mediaStream.stream;
 		if (!canvasRef.current.parentElement) {
 			return;
 		}
 
 		const onVideoReady = () => {
-			startStreamToCanvas(canvas, video);
-			requestAnimationFrame(() => updateBuffer(canvas));
+			resizeCanvas();
+			startStreamToCanvas(canvas, video, refControls.current);
 		};
 
 		video.addEventListener("loadedmetadata", onVideoReady);
 		return () => video.removeEventListener("loadedmetadata", onVideoReady);
-	}, [mediaStream]);
+	}, [mediaStream, refControls, resizeCanvas]);
 
 	useEffect(() => {
-		if (!mediaStream) {
+		if (!mediaStream.stream) {
 			if (videoRef.current) {
 				videoRef.current.srcObject = null;
 			}
@@ -61,11 +65,14 @@ export const VideoCanvas: FC = () => {
 		}
 	}, [mediaStream]);
 
-	useEffect(() => {}, []);
-
 	return (
 		<div className="flex w-full items-center justify-center">
 			<canvas className="w-full" ref={canvasRef} />
+			{!mediaStream.stream && (
+				<span className=" absolute top-[50%] -translate-y-[50%] text-white">
+					{mediaStream.status}
+				</span>
+			)}
 		</div>
 	);
 };
