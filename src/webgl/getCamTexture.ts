@@ -1,4 +1,4 @@
-import { setIntUniform } from "../utils/setUniform";
+import { setIntUniform } from "./setUniform";
 import { createTexture } from "./createTexture";
 
 

@@ -1,6 +1,6 @@
 import { ControlsType, initControls } from "../state/controlsAtom";
-import { setActiveTexture } from "../utils/setActiveTexture";
-import { setFloatUniform } from "../utils/setUniform";
+import { setActiveTexture } from "./setActiveTexture";
+import { setFloatUniform } from "./setUniform";
 import { getCamTexture } from "./getCamTexture";
 import { getWebGL } from "./getWebGL";
 import { setBuffer } from "./setBuffer";

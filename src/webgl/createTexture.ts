@@ -1,4 +1,4 @@
-import { setActiveTexture } from "../utils/setActiveTexture";
+import { setActiveTexture } from "./setActiveTexture";
 
 
 export const createTexture = (
