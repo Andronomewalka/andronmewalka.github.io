@@ -6,6 +6,7 @@ import { useAtom } from "jotai";
 import { mediaStreamAtom } from "../../state/mediaStreamAtom";
 import { controlsAtom } from "../../state/controlsAtom";
 import { useRefState } from "../../hooks/useRefState";
+import { VideoControls } from "../VideoControls/VideoControls";
 
 export const VideoCanvas: FC = () => {
 	const [mediaStream] = useAtom(mediaStreamAtom);
@@ -66,13 +67,14 @@ export const VideoCanvas: FC = () => {
 	}, [mediaStream]);
 
 	return (
-		<div className="flex w-full items-center justify-center">
+		<div className="relative flex w-full items-center justify-center">
 			<canvas className="w-full" ref={canvasRef} />
 			{!mediaStream.stream && (
 				<span className=" absolute top-[50%] -translate-y-[50%] text-white">
 					{mediaStream.status}
 				</span>
 			)}
+			<VideoControls />
 		</div>
 	);
 };

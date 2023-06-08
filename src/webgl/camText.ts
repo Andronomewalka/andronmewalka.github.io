@@ -37,7 +37,9 @@ const frag = glsl`#version 300 es
     uniform float saturation;
     uniform float brightness;
     uniform float contrast;
+    uniform float sharpen;
     uniform float hue;
+    uniform float blur;
     uniform float warmth;
     uniform float cold;
 
@@ -51,14 +53,14 @@ const frag = glsl`#version 300 es
     // normalize coords and correct for aspect ratio
     vec2 normalizeScreenCoords()
     {
-      float aspectRatio = fSize.x / fSize.y;
-      vec2 result = 2.0 * (gl_FragCoord.xy / fSize - 0.5);
-      result.x *= aspectRatio;
-      return result;
+        float aspectRatio = fSize.x / fSize.y;
+        vec2 result = 2.0 * (gl_FragCoord.xy / fSize - 0.5);
+        result.x *= aspectRatio;
+        return result;
     }
 
     vec2 camCoord(vec2 coord) {
-      return 1.0 - coord / fSize;
+        return 1.0 - coord / fSize;
     } 
 
     vec3 hueShift(vec3 color, float hue) {
@@ -71,22 +73,64 @@ const frag = glsl`#version 300 es
     vec3 greyVec = vec3(0.5, 0.5, 0.5);
 
     void main() {
-      vec2 p = normalizeScreenCoords();
-      vec2 coord = 1.0 - gl_FragCoord.xy / fSize;
+        vec2 p = normalizeScreenCoords();
+        vec2 coord = 1.0 - gl_FragCoord.xy / fSize;
 
-      vec4 tex = texture(camTexture, fUv + vec2(0.0, 0.0));
+        vec2 off = vec2(1.0 / fSize.x, 1.0 / fSize.y) * blur;
+        vec2 off2 = off * 2.0;
 
-      vec3 desaturated = vec3(dot(saturationVector, tex.rgb));
-      vec3 mixed = mix(desaturated, tex.rgb, saturation);
-      vec4 color = vec4(mixed, tex.a);
+        vec4 tex00 = texture(camTexture, fUv + vec2(-off2.x, -off2.y));
+        vec4 tex10 = texture(camTexture, fUv + vec2(-off.x, -off2.y));
+        vec4 tex20 = texture(camTexture, fUv + vec2(0.0, -off2.y));
+        vec4 tex30 = texture(camTexture, fUv + vec2(off.x, -off2.y));
+        vec4 tex40 = texture(camTexture, fUv + vec2(off2.x, -off2.y));
+        
+        vec4 tex01 = texture(camTexture, fUv + vec2(-off2.x, -off.y));
+        vec4 tex11 = texture(camTexture, fUv + vec2(-off.x, -off.y));
+        vec4 tex21 = texture(camTexture, fUv + vec2(0.0, -off.y));
+        vec4 tex31 = texture(camTexture, fUv + vec2(off.x, -off.y));
+        vec4 tex41 = texture(camTexture, fUv + vec2(off2.x, -off.y));
+        
+        vec4 tex02 = texture(camTexture, fUv + vec2(-off2.x, 0.0));
+        vec4 tex12 = texture(camTexture, fUv + vec2(-off.x, 0.0));
+        vec4 tex22 = texture(camTexture, fUv + vec2(0.0, 0.0));
+        vec4 tex32 = texture(camTexture, fUv + vec2(off.x, 0.0));
+        vec4 tex42 = texture(camTexture, fUv + vec2(off2.x, 0.0));
+        
+        vec4 tex03 = texture(camTexture, fUv + vec2(-off2.x, off.y));
+        vec4 tex13 = texture(camTexture, fUv + vec2(-off.x, off.y));
+        vec4 tex23 = texture(camTexture, fUv + vec2(0.0, off.y));
+        vec4 tex33 = texture(camTexture, fUv + vec2(off.x, off.y));
+        vec4 tex43 = texture(camTexture, fUv + vec2(off2.x, off.y));
+        
+        vec4 tex04 = texture(camTexture, fUv + vec2(-off2.x, off2.y));
+        vec4 tex14 = texture(camTexture, fUv + vec2(-off.x, off2.y));
+        vec4 tex24 = texture(camTexture, fUv + vec2(0.0, off2.y));
+        vec4 tex34 = texture(camTexture, fUv + vec2(off.x, off2.y));
+        vec4 tex44 = texture(camTexture, fUv + vec2(off2.x, off2.y));
 
-      color.rgb = mix(color.rgb * brightness, mix(greyVec, color.rgb, contrast), 0.5);
-      color.rbg = hueShift(color.rgb, hue);
+        vec4 tex = tex22;
 
-      color.r += warmth - cold;
-      color.b -= warmth + cold;
+         vec4 blurred = 1.0 * tex00 + 4.0 * tex10 + 6.0 * tex20 + 4.0 * tex30 + 1.0 * tex40
+            + 4.0 * tex01 + 16.0 * tex11 + 24.0 * tex21 + 16.0 * tex31 + 4.0 * tex41
+            + 6.0 * tex02 + 24.0 * tex12 + 36.0 * tex22 + 24.0 * tex32 + 6.0 * tex42
+            + 4.0 * tex03 + 16.0 * tex13 + 24.0 * tex23 + 16.0 * tex33 + 4.0 * tex43
+            + 1.0 * tex04 + 4.0 * tex14 + 6.0 * tex24 + 4.0 * tex34 + 1.0 * tex44;
 
-      fragColor = color;
+        blurred /= 256.0;
+        tex += (tex - blurred) * sharpen;
+
+        vec3 desaturated = vec3(dot(saturationVector, tex.rgb));
+        vec3 mixed = mix(desaturated, tex.rgb, saturation);
+        vec4 color = vec4(mixed, tex.a);
+
+        color.rgb = mix(color.rgb * brightness, mix(greyVec, color.rgb, contrast), 0.5);
+        color.rbg = hueShift(color.rgb, hue);
+
+        color.r += warmth - cold;
+        color.b -= warmth + cold;
+
+        fragColor = color;
     }
 `;
 
@@ -141,7 +185,9 @@ export const updateUniforms = (canvas: HTMLCanvasElement, controls?: ControlsTyp
     setFloatUniform(gl, program, "saturation", source.saturation);
     setFloatUniform(gl, program, "brightness", source.brightness);
     setFloatUniform(gl, program, "contrast", source.contrast);
+    setFloatUniform(gl, program, "sharpen", source.sharpen);
     setFloatUniform(gl, program, "hue", source.hue);
+    setFloatUniform(gl, program, "blur", source.blur);
     setFloatUniform(gl, program, "warmth", source.warmth);
     setFloatUniform(gl, program, "cold", source.cold);
 };

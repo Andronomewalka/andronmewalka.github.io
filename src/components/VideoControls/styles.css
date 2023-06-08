@@ -1,5 +1,5 @@
 .video-controls {
-	transform: translate(313px, -50%);
+	transform: translate(314px, -50%);
 	transition: all 0.2s ease;
 
 	&:hover {

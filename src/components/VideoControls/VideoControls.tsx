@@ -17,17 +17,31 @@ export const VideoControls: FC = () => {
 				<Slider
 					title="Saturation"
 					value={controls.saturation}
+					max={2}
+					step={0.02}
 					onChange={(value) => setControls({ ...controls, saturation: value[0] })}
 				/>
 				<Slider
 					title="Brightness"
 					value={controls.brightness}
+					max={2}
+					step={0.02}
 					onChange={(value) => setControls({ ...controls, brightness: value[0] })}
 				/>
 				<Slider
 					title="Contrast"
 					value={controls.contrast}
+					max={2}
+					step={0.02}
 					onChange={(value) => setControls({ ...controls, contrast: value[0] })}
+				/>
+				<Slider
+					title="Sharpness"
+					value={controls.sharpen}
+					min={-2}
+					max={2}
+					step={0.04}
+					onChange={(value) => setControls({ ...controls, sharpen: value[0] })}
 				/>
 				<Slider
 					title="Hue"
@@ -36,15 +50,25 @@ export const VideoControls: FC = () => {
 					onChange={(value) => setControls({ ...controls, hue: value[0] })}
 				/>
 				<Slider
+					title="Blur"
+					value={controls.blur}
+					min={0.01}
+					max={4}
+					step={0.04}
+					onChange={(value) => setControls({ ...controls, blur: value[0] })}
+				/>
+				<Slider
 					title="Warmth"
 					value={controls.warmth}
-					max={0.4}
+					max={0.1}
+					step={0.001}
 					onChange={(value) => setControls({ ...controls, warmth: value[0] })}
 				/>
 				<Slider
 					title="Cold"
 					value={controls.cold}
-					max={0.4}
+					max={0.1}
+					step={0.001}
 					onChange={(value) => setControls({ ...controls, cold: value[0] })}
 				/>
 				<button
