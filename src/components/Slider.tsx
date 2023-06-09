@@ -1,4 +1,4 @@
-import React, { FC, useId } from "react";
+import { FC, useId } from "react";
 import * as RadixSlider from "@radix-ui/react-slider";
 
 type SliderProps = {
