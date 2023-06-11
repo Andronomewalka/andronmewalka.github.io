@@ -15,7 +15,7 @@ export const initControls: ControlsType = {
     saturation: 1,
     brightness: 1,
     contrast: 1,
-    sharpen: 0,
+    sharpen: -2,
     hue: 0,
     blur: 0,
     warmth: 0,

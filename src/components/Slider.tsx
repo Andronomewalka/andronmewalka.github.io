@@ -16,7 +16,7 @@ export const Slider: FC<SliderProps> = ({
 	min = 0,
 	max = 1,
 	step = 0.01,
-	onChange,
+	onChange
 }) => {
 	const id = useId();
 	return (

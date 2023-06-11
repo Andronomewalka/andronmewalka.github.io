@@ -36,18 +36,18 @@ export const VideoControls: FC = () => {
 					onChange={(value) => setControls({ ...controls, contrast: value[0] })}
 				/>
 				<Slider
+					title="Hue"
+					value={controls.hue}
+					max={6.28319}
+					onChange={(value) => setControls({ ...controls, hue: value[0] })}
+				/>
+				<Slider
 					title="Sharpness"
 					value={controls.sharpen}
 					min={-2}
 					max={2}
 					step={0.04}
 					onChange={(value) => setControls({ ...controls, sharpen: value[0] })}
-				/>
-				<Slider
-					title="Hue"
-					value={controls.hue}
-					max={6.28319}
-					onChange={(value) => setControls({ ...controls, hue: value[0] })}
 				/>
 				<Slider
 					title="Blur"
