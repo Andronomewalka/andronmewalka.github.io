@@ -33,7 +33,7 @@ export const VideoCanvas: FC = () => {
 		}
 	}, []);
 
-	const resizeCanvas = useCanvasResize(canvasRef, onCanvasResize);
+	const resizeCanvas = useCanvasResize(canvasRef, mediaStream.settings, onCanvasResize);
 	useOnUpdateControls(canvasRef);
 
 	useEffect(() => {
