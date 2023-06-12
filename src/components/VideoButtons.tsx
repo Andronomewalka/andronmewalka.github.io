@@ -6,7 +6,6 @@ import {
 	initStreamSettings,
 	mediaStreamAtom
 } from "../state/mediaStreamAtom";
-import { getCorrectedAspectRatio } from "../utils/getCorrectedAspectRatio";
 
 export const VideoButtons: FC = () => {
 	const [connecting, setConnecting] = useState(false);
@@ -28,22 +27,20 @@ export const VideoButtons: FC = () => {
 				video: {
 					width: { ideal: 4096 },
 					height: { ideal: 2160 },
-					aspectRatio: 16 / 9
+					aspectRatio:
+						window.screen.availWidth > window.screen.availHeight ? 16 / 9 : 9 / 16
 				}
 			})
 			.then((res) => {
+				const settings = res.getVideoTracks()[0].getSettings();
+
 				const mediaStream: MediaStreamType = {
 					stream: res,
 					status: "Connected",
-					settings: initStreamSettings
+					settings: {
+						aspectRatio: settings.aspectRatio ?? 16 / 9
+					}
 				};
-
-				const rawSettings = res.getVideoTracks()[0].getSettings();
-				if (rawSettings.width && rawSettings.height && rawSettings.aspectRatio) {
-					mediaStream.settings = {
-						aspectRatio: getCorrectedAspectRatio(rawSettings.width, rawSettings.height)
-					};
-				}
 
 				setMediaStream(mediaStream);
 				setContent("Stop");
