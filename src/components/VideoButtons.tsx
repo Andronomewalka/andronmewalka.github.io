@@ -6,6 +6,7 @@ import {
 	initStreamSettings,
 	mediaStreamAtom
 } from "../state/mediaStreamAtom";
+import { getVideConfig } from "../utils/getVideConfig";
 
 export const VideoButtons: FC = () => {
 	const [connecting, setConnecting] = useState(false);
@@ -24,12 +25,7 @@ export const VideoButtons: FC = () => {
 		setContent("Hold on");
 		navigator.mediaDevices
 			.getUserMedia({
-				video: {
-					width: { ideal: 4096 },
-					height: { ideal: 2160 },
-					aspectRatio:
-						window.screen.availWidth > window.screen.availHeight ? 16 / 9 : 9 / 16
-				}
+				video: getVideConfig()
 			})
 			.then((res) => {
 				const settings = res.getVideoTracks()[0].getSettings();
