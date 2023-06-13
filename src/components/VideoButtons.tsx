@@ -34,7 +34,9 @@ export const VideoButtons: FC = () => {
 					stream: res,
 					status: "Connected",
 					settings: {
-						aspectRatio: settings.aspectRatio ?? 16 / 9
+						aspectRatio:
+							settings.aspectRatio ??
+							(settings.width as number) / (settings.height as number)
 					}
 				};
 

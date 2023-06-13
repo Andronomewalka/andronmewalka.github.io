@@ -18,6 +18,7 @@ export const VideoCanvas: FC = () => {
 	if (!videoRef.current) {
 		videoRef.current = document.createElement("video");
 		videoRef.current.autoplay = true;
+		videoRef.current.playsInline = true;
 	}
 
 	const onCanvasResize = useCallback(() => {
