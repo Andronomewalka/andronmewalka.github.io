@@ -1,7 +1,7 @@
 import { Note } from "./types";
 
 
-const padL = (num: number, len = 2, chr = "0") => `${num}`.padStart(2, chr);
+const padL = (num: number, len = 2, chr = "0") => `${num}`.padStart(len, chr);
 
 export const cx = (...classes: string[]) => classes.filter((cur) => cur).join(" ");
 
