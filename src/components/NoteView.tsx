@@ -3,7 +3,7 @@ import Markdown from "react-markdown";
 import styled from "styled-components";
 
 import { useQueryNote } from "../hooks/useQueryNote";
-import { formatDateTime } from "../utils";
+import { formatDateTime } from "../utils/formatDate";
 
 
 export const NoteView: FC = () => {

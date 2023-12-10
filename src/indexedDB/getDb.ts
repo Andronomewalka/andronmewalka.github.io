@@ -33,49 +33,8 @@ export const getDB = (): Promise<IDBDatabase> | IDBDatabase => {
             if (!db.objectStoreNames.contains("STORE_NAME")) {
                 db.createObjectStore(STORE_NAME, { keyPath: "slug" });
             }
-            resolve(db);
         });
     });
 
     return initializeDbPromise;
 };
-
-
-// AZ: mock for testing
-// const notesMock: Note[] = [
-//     {
-//         slug: "/old-note",
-//         title: "I'm from 2017-10-05",
-//         updatedAt: dayjs("2017-10-05").toDate()
-//     },
-//     {
-//         slug: "/old-note-2",
-//         title: "I'm from 2017-10-09",
-//         updatedAt: dayjs("2017-10-09").toDate()
-//     },
-//     {
-//         slug: "/old-note-3",
-//         title: "I'm from 2023-09-01",
-//         updatedAt: dayjs("2023-09-01").toDate()
-//     },
-//     {
-//         slug: "/old-note-4",
-//         title: "I'm from 2023-10-02",
-//         updatedAt: dayjs("2023-10-02").toDate()
-//     },
-//     {
-//         slug: "/old-note-5",
-//         title: "I'm from 2023-09-30",
-//         updatedAt: dayjs("2023-09-30").toDate()
-//     },
-//     {
-//         slug: "/old-note-6",
-//         title: "I'm from 2023-09-27",
-//         updatedAt: dayjs("2023-09-27").toDate()
-//     },
-//     {
-//         slug: "/today-note",
-//         title: "I'm created today",
-//         updatedAt: new Date()
-//     }
-// ];

@@ -4,7 +4,7 @@ import styled from "styled-components";
 
 import { trimCss } from "../../styles";
 import { Note } from "../../types";
-import { formatDate } from "../../utils";
+import { formatDate } from "../../utils/formatDate";
 import { NoteListItemDeleteButton } from "./NoteListItemDeleteButton";
 
 

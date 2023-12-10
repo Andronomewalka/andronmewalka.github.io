@@ -1,7 +1,7 @@
 import { FC, HTMLAttributes } from "react";
 import styled from "styled-components";
 
-import { cx } from "../../utils";
+import { cx } from "../../utils/formatDate";
 
 
 type IconButtonProps = HTMLAttributes<HTMLButtonElement> & {

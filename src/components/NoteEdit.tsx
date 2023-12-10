@@ -7,7 +7,8 @@ import { useQueryNote } from "../hooks/useQueryNote";
 import { useQueryNotes } from "../hooks/useQueryNotes";
 import { deleteNote, getNotes, updateNote } from "../indexedDB/IDBClient";
 import { inputBaseCss } from "../styles";
-import { formatDateTime, sameSlugLargestIndex } from "../utils";
+import { formatDateTime } from "../utils/formatDate";
+import { sameSlugLargestIndex } from "../utils/sameSlugLargestIndex";
 
 
 export const NoteEdit: FC = () => {
@@ -21,7 +22,7 @@ export const NoteEdit: FC = () => {
         }
 
         const isTitleChanged = title != note.title;
-        const encodedSlug = encodeURIComponent(title);
+        const encodedSlug = encodeURIComponent(title.toLowerCase().replaceAll(" ", "-").replaceAll(".", ""));
         const notes = await getNotes();
 
         let newSlug = note.slug;

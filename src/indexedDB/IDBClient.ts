@@ -1,4 +1,5 @@
 import { Note } from "../types";
+import { setInitialNotesPromise } from "../utils/setInitialNotes";
 import { STORE_NAME } from "./getDb";
 import { createTransaction, requestAsync, search } from "./utils";
 
@@ -11,6 +12,7 @@ export const getNote = async (slug: string): Promise<Note> => {
 };
 
 export const getNotes = async (filter?: string): Promise<Note[]> => {
+    await setInitialNotesPromise;
     const tx = await createTransaction("readonly");
     const store = tx.objectStore(STORE_NAME);
     if (filter) {

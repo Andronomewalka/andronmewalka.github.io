@@ -1,0 +1,556 @@
+diff --git a/.github/workflows/deploy.yml b/.github/workflows/deploy.yml
+index bfee6cd..5efa00d 100644
+--- a/.github/workflows/deploy.yml
++++ b/.github/workflows/deploy.yml
+@@ -2,54 +2,54 @@
+ name: Deploy static content to Pages
+ 
+ on:
+-    # Runs on pushes targeting the default branch
+-    push:
+-        branches: ["main"]
++  # Runs on pushes targeting the default branch
++  push:
++    branches: ["main"]
+ 
+-    # Allows you to run this workflow manually from the Actions tab
+-    workflow_dispatch:
++  # Allows you to run this workflow manually from the Actions tab
++  workflow_dispatch:
+ 
+ # Sets permissions of the GITHUB_TOKEN to allow deployment to GitHub Pages
+ permissions:
+-    contents: read
+-    pages: write
+-    id-token: write
++  contents: read
++  pages: write
++  id-token: write
+ 
+ # Allow only one concurrent deployment, skipping runs queued between the run in-progress and latest queued.
+ # However, do NOT cancel in-progress runs as we want to allow these production deployments to complete.
+ concurrency:
+-    group: "pages"
+-    cancel-in-progress: false
++  group: "pages"
++  cancel-in-progress: false
+ 
+ jobs:
+-    build:
+-        runs-on: ubuntu-latest
++  build:
++    runs-on: ubuntu-latest
+ 
+-        strategy:
+-            matrix:
+-                node-version: [16.x]
++    strategy:
++      matrix:
++        node-version: [18.x]
+ 
+-        steps:
+-            - uses: actions/checkout@v3
++    steps:
++      - uses: actions/checkout@v3
+ 
+-            - name: Use Node.js ${{ matrix.node-version }}
+-              uses: actions/setup-node@v3
+-              with:
+-                  node-version: ${{ matrix.node-version }}
++      - name: Use Node.js ${{ matrix.node-version }}
++        uses: actions/setup-node@v3
++        with:
++          node-version: ${{ matrix.node-version }}
+ 
+-            - name: Setup Pages
+-              uses: actions/configure-pages@v3
++      - name: Setup Pages
++        uses: actions/configure-pages@v3
+ 
+-            - run: yarn install --frozen-lockfile
++      - run: npm ci
+ 
+-            - run: yarn build
++      - run: npm run build
+ 
+-            - name: Upload artifact
+-              uses: actions/upload-pages-artifact@v1
+-              with:
+-                  # Upload entire repository
+-                  path: "./dist"
++      - name: Upload artifact
++        uses: actions/upload-pages-artifact@v1
++        with:
++          # Upload entire repository
++          path: "./dist"
+ 
+-            - name: Deploy to GitHub Pages
+-              id: deployment
+-              uses: actions/deploy-pages@v2
++      - name: Deploy to GitHub Pages
++        id: deployment
++        uses: actions/deploy-pages@v2
+diff --git a/package-lock.json b/package-lock.json
+index 2bd2ce9..8d39ac4 100644
+--- a/package-lock.json
++++ b/package-lock.json
+@@ -9,7 +9,6 @@
+             "version": "0.0.0",
+             "dependencies": {
+                 "@tanstack/react-query": "5.12.2",
+-                "dayjs": "1.11.10",
+                 "line-awesome": "1.3.0",
+                 "react": "^18.2.0",
+                 "react-dom": "^18.2.0",
+@@ -28,6 +27,7 @@
+                 "eslint-plugin-react-hooks": "^4.6.0",
+                 "eslint-plugin-react-refresh": "^0.4.3",
+                 "eslint-plugin-simple-import-sort": "8.0.0",
++                "fake-indexeddb": "5.0.1",
+                 "typescript": "^5.0.2",
+                 "vite": "^4.4.5",
+                 "vite-plugin-pwa": "0.17.4",
+@@ -4056,11 +4056,6 @@
+             "resolved": "https://registry.npmjs.org/csstype/-/csstype-3.1.3.tgz",
+             "integrity": "sha512-M1uQkMl8rQK/szD0LNhtqxIPLpimGm8sOBwU7lLnCpSbTyY3yeU1Vc7l4KT5zT4s/yOxHH5O7tIuuLOCnLADRw=="
+         },
+-        "node_modules/dayjs": {
+-            "version": "1.11.10",
+-            "resolved": "https://registry.npmjs.org/dayjs/-/dayjs-1.11.10.tgz",
+-            "integrity": "sha512-vjAczensTgRcqDERK0SR2XMwsF/tSvnvlv6VcF2GIhg6Sx4yOIt/irsr1RDJsKiIyBzJDpCoXiWWq28MqH2cnQ=="
+-        },
+         "node_modules/debug": {
+             "version": "4.3.4",
+             "resolved": "https://registry.npmjs.org/debug/-/debug-4.3.4.tgz",
+@@ -4676,6 +4671,15 @@
+             "resolved": "https://registry.npmjs.org/extend/-/extend-3.0.2.tgz",
+             "integrity": "sha512-fjquC59cD7CyW6urNXK0FBufkZcoiGG80wTuPujX590cB5Ttln20E2UB4S/WARVqhXffZl2LNgS+gQdPIIim/g=="
+         },
++        "node_modules/fake-indexeddb": {
++            "version": "5.0.1",
++            "resolved": "https://registry.npmjs.org/fake-indexeddb/-/fake-indexeddb-5.0.1.tgz",
++            "integrity": "sha512-vxybH29Owtc6khV/Usy47B1g+eKwyhFiX8nwpCC4td320jvwrKQDH6vNtcJZgUzVxmfsSIlHzLKQzT76JMCO7A==",
++            "dev": true,
++            "engines": {
++                "node": ">=18"
++            }
++        },
+         "node_modules/fast-deep-equal": {
+             "version": "3.1.3",
+             "resolved": "https://registry.npmjs.org/fast-deep-equal/-/fast-deep-equal-3.1.3.tgz",
+@@ -12444,11 +12448,6 @@
+             "resolved": "https://registry.npmjs.org/csstype/-/csstype-3.1.3.tgz",
+             "integrity": "sha512-M1uQkMl8rQK/szD0LNhtqxIPLpimGm8sOBwU7lLnCpSbTyY3yeU1Vc7l4KT5zT4s/yOxHH5O7tIuuLOCnLADRw=="
+         },
+-        "dayjs": {
+-            "version": "1.11.10",
+-            "resolved": "https://registry.npmjs.org/dayjs/-/dayjs-1.11.10.tgz",
+-            "integrity": "sha512-vjAczensTgRcqDERK0SR2XMwsF/tSvnvlv6VcF2GIhg6Sx4yOIt/irsr1RDJsKiIyBzJDpCoXiWWq28MqH2cnQ=="
+-        },
+         "debug": {
+             "version": "4.3.4",
+             "resolved": "https://registry.npmjs.org/debug/-/debug-4.3.4.tgz",
+@@ -12917,6 +12916,12 @@
+             "resolved": "https://registry.npmjs.org/extend/-/extend-3.0.2.tgz",
+             "integrity": "sha512-fjquC59cD7CyW6urNXK0FBufkZcoiGG80wTuPujX590cB5Ttln20E2UB4S/WARVqhXffZl2LNgS+gQdPIIim/g=="
+         },
++        "fake-indexeddb": {
++            "version": "5.0.1",
++            "resolved": "https://registry.npmjs.org/fake-indexeddb/-/fake-indexeddb-5.0.1.tgz",
++            "integrity": "sha512-vxybH29Owtc6khV/Usy47B1g+eKwyhFiX8nwpCC4td320jvwrKQDH6vNtcJZgUzVxmfsSIlHzLKQzT76JMCO7A==",
++            "dev": true
++        },
+         "fast-deep-equal": {
+             "version": "3.1.3",
+             "resolved": "https://registry.npmjs.org/fast-deep-equal/-/fast-deep-equal-3.1.3.tgz",
+diff --git a/package.json b/package.json
+index 73ae550..7d8c873 100644
+--- a/package.json
++++ b/package.json
+@@ -7,11 +7,11 @@
+         "dev": "vite",
+         "build": "tsc && vite build",
+         "lint": "eslint . --ext ts,tsx --report-unused-disable-directives --max-warnings 0",
+-        "preview": "vite preview"
++        "preview": "vite preview",
++        "test": "vitest"
+     },
+     "dependencies": {
+         "@tanstack/react-query": "5.12.2",
+-        "dayjs": "1.11.10",
+         "line-awesome": "1.3.0",
+         "react": "^18.2.0",
+         "react-dom": "^18.2.0",
+@@ -30,6 +30,7 @@
+         "eslint-plugin-react-hooks": "^4.6.0",
+         "eslint-plugin-react-refresh": "^0.4.3",
+         "eslint-plugin-simple-import-sort": "8.0.0",
++        "fake-indexeddb": "5.0.1",
+         "typescript": "^5.0.2",
+         "vite": "^4.4.5",
+         "vite-plugin-pwa": "0.17.4",
+diff --git a/src/App.tsx b/src/App.tsx
+index 5d1a7d5..030de3c 100644
+--- a/src/App.tsx
++++ b/src/App.tsx
+@@ -3,6 +3,7 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+ import { ThemeProvider } from "styled-components";
+ 
+ import { Root } from "./components/Root";
++import { setInitialNotes } from "./utils/setInitialNotes";
+ import { GlobalStyle, theme } from "./styles";
+ 
+ import "line-awesome/dist/line-awesome/css/line-awesome.min.css";
+@@ -10,6 +11,8 @@ import "line-awesome/dist/line-awesome/css/line-awesome.min.css";
+ 
+ const queryClient = new QueryClient();
+ 
++setInitialNotes();
++
+ export const App: FC = () => {
+     return (
+         <QueryClientProvider client={queryClient}>
+diff --git a/src/components/Header/HeaderCreateNote.tsx b/src/components/Header/HeaderCreateNote.tsx
+index 5eb6f56..4fa1efb 100644
+--- a/src/components/Header/HeaderCreateNote.tsx
++++ b/src/components/Header/HeaderCreateNote.tsx
+@@ -4,7 +4,7 @@ import { useNavigate } from "react-router-dom";
+ import { useQueryNotes } from "../../hooks/useQueryNotes";
+ import { getNotes, updateNote } from "../../indexedDB/IDBClient";
+ import { NoteTab } from "../../types";
+-import { sameSlugLargestIndex } from "../../utils";
++import { sameSlugLargestIndex } from "../../utils/sameSlugLargestIndex";
+ import { IconButton } from "../primitives/IconButton";
+ 
+ 
+diff --git a/src/components/NoteEdit.tsx b/src/components/NoteEdit.tsx
+index 127ee7a..3a13061 100644
+--- a/src/components/NoteEdit.tsx
++++ b/src/components/NoteEdit.tsx
+@@ -7,7 +7,8 @@ import { useQueryNote } from "../hooks/useQueryNote";
+ import { useQueryNotes } from "../hooks/useQueryNotes";
+ import { deleteNote, getNotes, updateNote } from "../indexedDB/IDBClient";
+ import { inputBaseCss } from "../styles";
+-import { formatDateTime, sameSlugLargestIndex } from "../utils";
++import { formatDateTime } from "../utils/formatDate";
++import { sameSlugLargestIndex } from "../utils/sameSlugLargestIndex";
+ 
+ 
+ export const NoteEdit: FC = () => {
+@@ -21,7 +22,7 @@ export const NoteEdit: FC = () => {
+         }
+ 
+         const isTitleChanged = title != note.title;
+-        const encodedSlug = encodeURIComponent(title);
++        const encodedSlug = encodeURIComponent(title.toLowerCase().replaceAll(" ", "-").replaceAll(".", ""));
+         const notes = await getNotes();
+ 
+         let newSlug = note.slug;
+diff --git a/src/components/NoteView.tsx b/src/components/NoteView.tsx
+index c731e83..267cf3b 100644
+--- a/src/components/NoteView.tsx
++++ b/src/components/NoteView.tsx
+@@ -3,7 +3,7 @@ import Markdown from "react-markdown";
+ import styled from "styled-components";
+ 
+ import { useQueryNote } from "../hooks/useQueryNote";
+-import { formatDateTime } from "../utils";
++import { formatDateTime } from "../utils/formatDate";
+ 
+ 
+ export const NoteView: FC = () => {
+diff --git a/src/components/NotesList/NoteListItem.tsx b/src/components/NotesList/NoteListItem.tsx
+index 07b1f67..ae38595 100644
+--- a/src/components/NotesList/NoteListItem.tsx
++++ b/src/components/NotesList/NoteListItem.tsx
+@@ -4,7 +4,7 @@ import styled from "styled-components";
+ 
+ import { trimCss } from "../../styles";
+ import { Note } from "../../types";
+-import { formatDate } from "../../utils";
++import { formatDate } from "../../utils/formatDate";
+ import { NoteListItemDeleteButton } from "./NoteListItemDeleteButton";
+ 
+ 
+diff --git a/src/components/primitives/IconButton.tsx b/src/components/primitives/IconButton.tsx
+index f5076b4..7254b30 100644
+--- a/src/components/primitives/IconButton.tsx
++++ b/src/components/primitives/IconButton.tsx
+@@ -1,7 +1,7 @@
+ import { FC, HTMLAttributes } from "react";
+ import styled from "styled-components";
+ 
+-import { cx } from "../../utils";
++import { cx } from "../../utils/formatDate";
+ 
+ 
+ type IconButtonProps = HTMLAttributes<HTMLButtonElement> & {
+diff --git a/src/indexedDB/IDBClient.ts b/src/indexedDB/IDBClient.ts
+index 5f5d875..3b4004d 100644
+--- a/src/indexedDB/IDBClient.ts
++++ b/src/indexedDB/IDBClient.ts
+@@ -1,4 +1,5 @@
+ import { Note } from "../types";
++import { setInitialNotesPromise } from "../utils/setInitialNotes";
+ import { STORE_NAME } from "./getDb";
+ import { createTransaction, requestAsync, search } from "./utils";
+ 
+@@ -11,6 +12,7 @@ export const getNote = async (slug: string): Promise<Note> => {
+ };
+ 
+ export const getNotes = async (filter?: string): Promise<Note[]> => {
++    await setInitialNotesPromise;
+     const tx = await createTransaction("readonly");
+     const store = tx.objectStore(STORE_NAME);
+     if (filter) {
+diff --git a/src/indexedDB/getDb.ts b/src/indexedDB/getDb.ts
+index dd0e659..d8a3ddb 100644
+--- a/src/indexedDB/getDb.ts
++++ b/src/indexedDB/getDb.ts
+@@ -33,49 +33,8 @@ export const getDB = (): Promise<IDBDatabase> | IDBDatabase => {
+             if (!db.objectStoreNames.contains("STORE_NAME")) {
+                 db.createObjectStore(STORE_NAME, { keyPath: "slug" });
+             }
+-            resolve(db);
+         });
+     });
+ 
+     return initializeDbPromise;
+ };
+-
+-
+-// AZ: mock for testing
+-// const notesMock: Note[] = [
+-//     {
+-//         slug: "/old-note",
+-//         title: "I'm from 2017-10-05",
+-//         updatedAt: dayjs("2017-10-05").toDate()
+-//     },
+-//     {
+-//         slug: "/old-note-2",
+-//         title: "I'm from 2017-10-09",
+-//         updatedAt: dayjs("2017-10-09").toDate()
+-//     },
+-//     {
+-//         slug: "/old-note-3",
+-//         title: "I'm from 2023-09-01",
+-//         updatedAt: dayjs("2023-09-01").toDate()
+-//     },
+-//     {
+-//         slug: "/old-note-4",
+-//         title: "I'm from 2023-10-02",
+-//         updatedAt: dayjs("2023-10-02").toDate()
+-//     },
+-//     {
+-//         slug: "/old-note-5",
+-//         title: "I'm from 2023-09-30",
+-//         updatedAt: dayjs("2023-09-30").toDate()
+-//     },
+-//     {
+-//         slug: "/old-note-6",
+-//         title: "I'm from 2023-09-27",
+-//         updatedAt: dayjs("2023-09-27").toDate()
+-//     },
+-//     {
+-//         slug: "/today-note",
+-//         title: "I'm created today",
+-//         updatedAt: new Date()
+-//     }
+-// ];
+diff --git a/src/utils.ts b/src/utils/formatDate.ts
+similarity index 59%
+rename from src/utils.ts
+rename to src/utils/formatDate.ts
+index 3aa0213..0fd4a1d 100644
+--- a/src/utils.ts
++++ b/src/utils/formatDate.ts
+@@ -1,6 +1,3 @@
+-import { Note } from "./types";
+-
+-
+ const padL = (num: number, len = 2, chr = "0") => `${num}`.padStart(len, chr);
+ 
+ export const cx = (...classes: string[]) => classes.filter((cur) => cur).join(" ");
+@@ -12,10 +9,3 @@ export const formatDate = (date: Date) => {
+ export const formatDateTime = (date: Date) => {
+     return `${formatDate(date)} ${padL(date.getHours())}:${padL(date.getMinutes())}:${padL(date.getSeconds())}`;
+ };
+-
+-export const sameSlugLargestIndex = (notes: Note[], slugBase: string) => {
+-    return notes
+-        .filter((cur) => cur.slug.startsWith(slugBase))
+-        .map((cur) => Number.parseInt(cur.slug.substring(`${slugBase}-`.length)))
+-        .filter((cur) => !Number.isNaN(cur));
+-};
+diff --git a/src/utils/sameSlugLargestIndex.ts b/src/utils/sameSlugLargestIndex.ts
+new file mode 100644
+index 0000000..85d50e8
+--- /dev/null
++++ b/src/utils/sameSlugLargestIndex.ts
+@@ -0,0 +1,9 @@
++import { Note } from "../types";
++
++
++export const sameSlugLargestIndex = (notes: Note[], slugBase: string) => {
++    return notes
++        .filter((cur) => cur.slug.startsWith(slugBase))
++        .map((cur) => Number.parseInt(cur.slug.substring(`${slugBase}-`.length)))
++        .filter((cur) => !Number.isNaN(cur));
++};
+diff --git a/src/utils/setInitialNotes.ts b/src/utils/setInitialNotes.ts
+new file mode 100644
+index 0000000..29f84bd
+--- /dev/null
++++ b/src/utils/setInitialNotes.ts
+@@ -0,0 +1,90 @@
++import { updateNote } from "../indexedDB/IDBClient";
++import { Note, NoteTab } from "../types";
++
++
++const now = new Date();
++
++const firstDate = new Date(now);
++firstDate.setDate(firstDate.getDate() - 1);
++
++const secondDate = new Date(now);
++secondDate.setDate(secondDate.getDate() - 2);
++
++const thirdDate = new Date(now);
++thirdDate.setDate(thirdDate.getDate() - 3);
++
++export const initialNotes: Note[] = [
++    {
++        slug: "weather-forecast-for-great-britain",
++        title: "Weather Forecast for Great Britain",
++        content: `
++- #### Monday: Sunny with a slight chance of chocolate rain in the morning. Temperature: 18°C.
++- #### Tuesday: Cloudy with a 50% chance of unicorn sightings. Temperature: 20°C.
++- #### Wednesday: Heavy rain of jellybeans expected in the afternoon. Temperature: 15°C.
++- #### Thursday: Partially cloudy, with a 30% chance of rainbow showers. Temperature: 22°C.
++- #### Friday: Foggy with a high chance of invisible snowflakes. Temperature: 14°C.
++- #### Saturday: Clear skies, perfect for flying pigs. Temperature: 25°C.
++- #### Sunday: Tornado warning—secure your flying umbrellas! Temperature: 19°C.
++`,
++        updatedAt: now,
++        tab: NoteTab.View
++    },
++    {
++        slug: "do-do-list",
++        title: "To do list",
++        content: `
++1. Save the world from paperclip shortage.
++2. Teach penguins to tap dance.
++3. Invent a new color and name it "blorple."
++4. Find the missing sock that always disappears in the laundry.
++5. Build a time machine and attend a dinosaur tea party.
++6. Convince a cat to reveal the secret of eternal happiness.
++7. Learn to speak **fluent dolphin**.
++8. Plant jellybean seeds and grow a *candy garden*.
++9. Solve the mystery of who let the dogs out.
++10. Invent a device that translates baby talk into understandable language.
++`,
++        updatedAt: firstDate,
++        tab: NoteTab.View
++    },
++    {
++        slug: "upcoming-bills-%3A(",
++        title: "Upcoming bills :(",
++        content: `
++1. Electricity Bill
++    - Amount: $12.34
++    - Note: Reduced energy consumption by using pet hamster-powered generator.
++
++2. Water Bill
++    - Amount: $8.76
++    - Note: Installed a rainwater harvesting system—saving the planet drop by drop.
++
++3. Internet Bill
++    - Amount: $29.99
++    - Note: Upgraded to faster-than-light internet speed—now downloading data from the future.
++
++4. Grocery Bill
++    - Amount: $50.00
++    - Note: Purchased essentials like unicorn food and dragon snacks.
++
++5. Rent/Mortgage
++    - Amount: $1,000.00
++    - Note: Living in a floating castle above the clouds—renting from a friendly cloud giant.
++`,
++        updatedAt: secondDate,
++        tab: NoteTab.View
++    },
++];
++
++
++export let setInitialNotesPromise: Promise<void> = null;
++
++export const setInitialNotes = async () => {
++    const initItemsSet = localStorage.getItem("initItemsSet");
++    if (!initItemsSet) {
++        await Promise.all(initialNotes.map(updateNote));
++        localStorage.setItem("initItemsSet", "true");
++    }
++
++    setInitialNotesPromise = Promise.resolve();
++};
+diff --git a/tests/IDBClient.test.ts b/tests/IDBClient.test.ts
+new file mode 100644
+index 0000000..c5b7ded
+--- /dev/null
++++ b/tests/IDBClient.test.ts
+@@ -0,0 +1,29 @@
++import { expect, test, vi } from "vitest";
++
++import { getNotes, updateNote } from "../src/indexedDB/IDBClient";
++import { Note, NoteTab } from "../src/types";
++
++import "fake-indexeddb/auto";
++
++
++const note: Note = {
++    slug: "some",
++    title: "some",
++    content: "here is some note",
++    tab: NoteTab.View,
++    updatedAt: new Date(5)
++};
++
++vi.stubGlobal("DB_NAME", "NotedDB_test");
++vi.stubGlobal("STORE_NAME", "NotedStore_test");
++
++// afterEach(() => {
++//     indexedDB.deleteDatabase("NotedDB_test");
++// });
++
++test("should create note in db if there is no note with such slug", async () => {
++    indexedDB.open("NotedDB_test");
++    await updateNote(note);
++    const notes = await getNotes();
++    expect(notes).toHaveLength(1);
++});
+diff --git a/tsconfig.json b/tsconfig.json
+index 253bf08..ab36523 100644
+--- a/tsconfig.json
++++ b/tsconfig.json
+@@ -1,9 +1,9 @@
+ {
+     "compilerOptions": {
+-        "target": "ES2020",
++        "target": "ES2021",
+         "useDefineForClassFields": true,
+         "lib": [
+-            "ES2020",
++            "ES2021",
+             "DOM",
+             "DOM.Iterable",
+             "ES2023.Array"
+@@ -25,7 +25,8 @@
+         "noFallthroughCasesInSwitch": true,
+     },
+     "include": [
+-        "src"
++        "src",
++        "tests"
+     ],
+     "references": [
+         {

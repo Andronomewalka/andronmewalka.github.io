@@ -4,7 +4,7 @@ import { useNavigate } from "react-router-dom";
 import { useQueryNotes } from "../../hooks/useQueryNotes";
 import { getNotes, updateNote } from "../../indexedDB/IDBClient";
 import { NoteTab } from "../../types";
-import { sameSlugLargestIndex } from "../../utils";
+import { sameSlugLargestIndex } from "../../utils/sameSlugLargestIndex";
 import { IconButton } from "../primitives/IconButton";
 
 
