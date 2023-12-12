@@ -38,3 +38,11 @@ export const getDB = (): Promise<IDBDatabase> | IDBDatabase => {
 
     return initializeDbPromise;
 };
+
+// AZ: there is no workaround to really wait on close
+// db.onclose() never fires
+// https://github.com/w3c/IndexedDB/issues/72
+export const clearCachedDBInstance = () => {
+    db = null;
+    initializeDbPromise = null;
+};

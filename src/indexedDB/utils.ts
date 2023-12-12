@@ -3,6 +3,8 @@ import { getDB, STORE_NAME } from "./getDb";
 import { IDBCursor, IDBOpenRequestEvenProps } from "./types";
 
 
+const SEARCH_DELIMITERS = /[ !?#$%^&*,.:+-/(/)'"]/;
+
 export const createTransaction = async (mode: IDBTransactionMode) => {
     const db = await getDB();
 
@@ -37,7 +39,7 @@ export const search = (filter: string, store: IDBObjectStore): Promise<Note[]> =
 
     const result: Note[] = [];
 
-    const lowerFilterParts = filter?.trim()?.toLocaleLowerCase().split(" ");
+    const lowerFilterParts = filter?.trim()?.toLocaleLowerCase().split(SEARCH_DELIMITERS);
 
     return new Promise((resolve, reject) => {
         request.addEventListener("success", (event) => {
@@ -62,6 +64,17 @@ export const search = (filter: string, store: IDBObjectStore): Promise<Note[]> =
     });
 };
 
-const isContentSatisfiesSearch = (noteContent: string, searchParts: string[]) => {
-    return searchParts.every((part) => noteContent.toLowerCase().includes(part));
+const isContentSatisfiesSearch = (text: string, searchParts: string[]) => {
+    if (!text) {
+        return false;
+    }
+
+    const lowerText = text.toLowerCase();
+
+    if (searchParts?.length === 1) {
+        return lowerText.includes(searchParts[0]);
+    }
+
+    const lowerTextParts = text.toLowerCase().split(SEARCH_DELIMITERS);
+    return searchParts.every((part) => lowerTextParts.includes(part));
 };
